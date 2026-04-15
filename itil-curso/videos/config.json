@@ -1,0 +1,22 @@
+{
+  "timestamp": "2026-03-28T12:57:33.169717",
+  "pipeline": "ITIL v5 \u2192 OpenLMS Videos",
+  "modules_processed": 3,
+  "results": [
+    {
+      "module_id": "M1",
+      "title": "Introducci\u00f3n a ITIL",
+      "video": "videos/output/M1_video.mp4"
+    },
+    {
+      "module_id": "M2",
+      "title": "Modelo de Valor de ITIL",
+      "video": "videos/output/M2_video.mp4"
+    },
+    {
+      "module_id": "M3",
+      "title": "Gobernanza y Gesti\u00f3n",
+      "video": "videos/output/M3_video.mp4"
+    }
+  ]
+}
