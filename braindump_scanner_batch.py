@@ -115,6 +115,7 @@ for archivo in archivos_excel:
         riesgo = 0.0
         evidencias = []
         accion = "Mantener"
+        mejor_snippet = "Sin resultados en la web"
         
         for res in resultados:
             sim = calcular_similitud(query, res["snippet"])
@@ -123,7 +124,10 @@ for archivo in archivos_excel:
             if is_braindump:
                 sim += 0.30 # Penalización severa
                 
-            riesgo = max(riesgo, min(sim, 1.0))
+            # Si esta similitud es la mayor hasta ahora, guardamos el riesgo y el texto encontrado
+            if sim > riesgo:
+                riesgo = sim
+                mejor_snippet = res["snippet"]
             
             if sim > 0.40:
                 evidencias.append(res["url"])
@@ -151,7 +155,8 @@ for archivo in archivos_excel:
             "Nivel_Riesgo_%": f"{riesgo_porcentaje}%",
             "Sitios_Braindump": "SÍ" if any(sospechoso in url.lower() for url in evidencias for sospechoso in sitios_sospechosos) else "NO",
             "Accion_Sugerida": accion,
-            "URLs_Evidencia": " | ".join(evidencias[:3]) if evidencias else "Ninguna"
+            "URLs_Evidencia": " | ".join(evidencias[:3]) if evidencias else "Ninguna",
+            "Texto_Encontrado_Web": mejor_snippet if riesgo > 0 else "Sin resultados relevantes"
         })
         
         time.sleep(1.5) # Respetar rate limit de la API
@@ -162,7 +167,7 @@ for archivo in archivos_excel:
     
     try:
         with open(ruta_salida, 'w', newline='', encoding='utf-8') as f:
-            campos = ["ID_Pregunta", "Pregunta", "Estado_Seguridad", "Nivel_Riesgo_%", "Sitios_Braindump", "Accion_Sugerida", "URLs_Evidencia"]
+            campos = ["ID_Pregunta", "Pregunta", "Estado_Seguridad", "Nivel_Riesgo_%", "Sitios_Braindump", "Accion_Sugerida", "URLs_Evidencia", "Texto_Encontrado_Web"]
             writer = csv.DictWriter(f, fieldnames=campos)
             writer.writeheader()
             writer.writerows(reporte)
