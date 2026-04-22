@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ITIL Foundation v5 - Módulo 1.1</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            overflow: hidden; /* Evitar scroll */
+        }
+
+        #video-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* --- Cortinilla --- */
+        #cortinilla {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            transition: opacity 1s ease-in-out;
+        }
+
+        #cortinilla img {
+            max-width: 400px;
+            animation: zoomIn 3s ease-out forwards;
+        }
+        
+        #cortinilla h1 {
+            margin-top: 20px;
+            color: #142850;
+            opacity: 0;
+            animation: fadeIn 1s 1.5s forwards;
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1.1); opacity: 1; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* --- Diapositivas --- */
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            padding: 50px;
+            box-sizing: border-box;
+            background-color: #f0f2f5;
+        }
+
+        .slide.active {
+            opacity: 1;
+            z-index: 10;
+        }
+
+        /* Layout de la slide */
+        .left-panel {
+            flex: 1;
+            padding-right: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .right-panel {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative; /* Para el recorte */
+            overflow: hidden;
+        }
+
+        h1.title {
+            color: #142850;
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            border-bottom: 5px solid #0078d7;
+            padding-bottom: 10px;
+        }
+
+        .bullets {
+            font-size: 2rem;
+            line-height: 1.6;
+            color: #3c3c3c;
+        }
+        
+        .bullets p {
+            margin: 15px 0;
+        }
+
+        /* Imagen de ITIL (con recorte inferior CSS) */
+        .diagram {
+            max-width: 100%;
+            max-height: 80vh;
+            object-fit: contain;
+            /* Clip para la marca de agua: recorta el 5% inferior aprox */
+            clip-path: inset(0 0 5% 0); 
+        }
+
+        /* Marca de agua Netec */
+        #watermark {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            width: 150px;
+            z-index: 50;
+        }
+
+        /* Botón de inicio */
+        #start-btn {
+            position: absolute;
+            z-index: 200;
+            padding: 15px 30px;
+            font-size: 1.5rem;
+            background-color: #0078d7;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        #start-btn:hover { background-color: #005a9e; }
+
+    </style>
+</head>
+<body>
+
+    <div id="video-container">
+        <button id="start-btn">Iniciar Curso</button>
+
+        <!-- Marca de agua global -->
+        <img id="watermark" src="../../assets/netec_logo_transparent.png" alt="Netec Logo" style="display:none;">
+
+        <!-- Cortinilla -->
+        <div id="cortinilla">
+            <img src="../../assets/netec_logo_color.png" alt="Netec">
+            <h1>ITIL Foundation (versión 5)</h1>
+        </div>
+
+        <!-- Slides -->
+        <div id="slide-01_intro" class="slide">
+            <div class="left-panel">
+                <h1 class="title">¿Qué es ITIL?</h1>
+                <div class="bullets">
+                    <p>• 40 años de relevancia</p>
+                    <p>• De librería de infraestructura</p>
+                    <p>• A marco de trabajo digital</p>
+                </div>
+            </div>
+            <div class="right-panel"></div>
+        </div>
+
+        <div id="slide-02_historia" class="slide">
+            <div class="left-panel">
+                <h1 class="title">El Origen (1989)</h1>
+                <div class="bullets">
+                    <p>• Creado en Reino Unido</p>
+                    <p>• Estandarización tecnológica</p>
+                    <p>• Biblioteca de Infraestructura de TI</p>
+                </div>
+            </div>
+            <div class="right-panel">
+                <img class="diagram" src="../../assets/Spanish/Diagramas_ITILv5/ITIL5_Fig1.2_EN_wtmd.png" alt="Historia">
+            </div>
+        </div>
+
+        <div id="slide-03_library" class="slide">
+            <div class="left-panel">
+                <h1 class="title">Evolución</h1>
+                <div class="bullets">
+                    <p>• Etapa 1: Hardware</p>
+                    <p>• Etapa 2: Procesos</p>
+                    <p>• Etapa 3: Valor (ITIL 4)</p>
+                </div>
+            </div>
+            <div class="right-panel">
+                <img class="diagram" src="../../assets/Spanish/Diagramas_ITILv5/ITIL5_Fig1.3_EN_wtmd.png" alt="Evolucion">
+            </div>
+        </div>
+
+        <div id="slide-04_evolucion_1" class="slide">
+            <div class="left-panel">
+                <h1 class="title">ITIL v5: Gestión Digital</h1>
+                <div class="bullets">
+                    <p>• Inteligencia Artificial</p>
+                    <p>• Sostenibilidad</p>
+                    <p>• Cocreación de valor</p>
+                </div>
+            </div>
+            <div class="right-panel">
+                <img class="diagram" src="../../assets/Spanish/Diagramas_ITILv5/ITIL5_Fig1.1A_EN_wtmd.png" alt="v5">
+            </div>
+        </div>
+
+        <div id="slide-05_evolucion_2" class="slide">
+            <div class="left-panel">
+                <h1 class="title">Todo es Digital</h1>
+                <div class="bullets">
+                    <p>• La TI es el negocio</p>
+                    <p>• Retorno de inversión claro</p>
+                    <p>• Valor real para el cliente</p>
+                </div>
+            </div>
+            <div class="right-panel">
+                <img class="diagram" src="../../assets/Spanish/Diagramas_ITILv5/ITIL5_Fig1.1B_EN_wtmd.png" alt="Digital">
+            </div>
+        </div>
+
+        <div id="slide-06_hoy" class="slide">
+            <div class="left-panel">
+                <h1 class="title">Un Lenguaje Común</h1>
+                <div class="bullets">
+                    <p>• Ya no es 'Infraestructura'</p>
+                    <p>• Gestión de productos y servicios</p>
+                    <p>• Para todos, no solo TI</p>
+                </div>
+            </div>
+            <div class="right-panel">
+                <img class="diagram" src="../../assets/Spanish/Diagramas_ITILv5/ITIL5_Fig1.1C_EN_wtmd.png" alt="Hoy">
+            </div>
+        </div>
+
+        <div id="slide-07_framework" class="slide">
+            <div class="left-panel">
+                <h1 class="title">El Marco Actual</h1>
+                <div class="bullets">
+                    <p>• Conecta Personas y Tecnología</p>
+                    <p>• Conecta Socios y Procesos</p>
+                    <p>• Crecimiento sostenible</p>
+                </div>
+            </div>
+            <div class="right-panel">
+                <img class="diagram" src="../../assets/Spanish/Diagramas_ITILv5/ITIL5_Fig1.4_EN_wtmd.png" alt="Framework">
+            </div>
+        </div>
+
+        <div id="slide-08_cierre" class="slide">
+            <div class="left-panel">
+                <h1 class="title">Certificaciones</h1>
+                <div class="bullets">
+                    <p>• Los 7 módulos de ITIL v5</p>
+                    <p>• Construye tu carrera</p>
+                    <p>• ¡Siguiente video!</p>
+                </div>
+            </div>
+            <div class="right-panel">
+                <img class="diagram" src="../../assets/Spanish/Diagramas_ITILv5/ITIL5_Fig0.1_EN_wtmd.png" alt="Cierre">
+            </div>
+        </div>
+    </div>
+
+    <!-- Audios (asumimos que están en la misma carpeta o ruta relativa) -->
+    <audio id="audio-01_intro" src="01_intro.mp3"></audio>
+    <audio id="audio-02_historia" src="02_historia.mp3"></audio>
+    <audio id="audio-03_library" src="03_library.mp3"></audio>
+    <audio id="audio-04_evolucion_1" src="04_evolucion_1.mp3"></audio>
+    <audio id="audio-05_evolucion_2" src="05_evolucion_2.mp3"></audio>
+    <audio id="audio-06_hoy" src="06_hoy.mp3"></audio>
+    <audio id="audio-07_framework" src="07_framework.mp3"></audio>
+    <audio id="audio-08_cierre" src="08_cierre.mp3"></audio>
+
+    <script>
+        const sequence = [
+            "01_intro", "02_historia", "03_library", 
+            "04_evolucion_1", "05_evolucion_2", "06_hoy", 
+            "07_framework", "08_cierre"
+        ];
+        
+        let currentIndex = 0;
+
+        document.getElementById('start-btn').addEventListener('click', function() {
+            this.style.display = 'none';
+            iniciarCurso();
+        });
+
+        function iniciarCurso() {
+            const cortinilla = document.getElementById('cortinilla');
+            const watermark = document.getElementById('watermark');
+            
+            // Simular 3 segundos de cortinilla
+            setTimeout(() => {
+                cortinilla.style.opacity = '0';
+                setTimeout(() => {
+                    cortinilla.style.display = 'none';
+                    watermark.style.display = 'block'; // Mostrar logo en esquina
+                    reproducirSeccion(0);
+                }, 1000);
+            }, 3000);
+        }
+
+        function reproducirSeccion(index) {
+            if (index >= sequence.length) {
+                console.log("Curso Finalizado.");
+                return;
+            }
+
+            // Ocultar slides anteriores
+            document.querySelectorAll('.slide').forEach(el => el.classList.remove('active'));
+            
+            // Mostrar slide actual
+            const currentId = sequence[index];
+            document.getElementById(`slide-${currentId}`).classList.add('active');
+
+            // Reproducir audio
+            const audio = document.getElementById(`audio-${currentId}`);
+            if (audio) {
+                audio.play();
+                audio.onended = () => {
+                    reproducirSeccion(index + 1); // Siguiente cuando termine el audio
+                };
+            } else {
+                // Si no hay audio, esperar 3s y saltar (fallback)
+                setTimeout(() => reproducirSeccion(index + 1), 3000);
+            }
+        }
+    </script>
+</body>
+</html>
