@@ -12,7 +12,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f0f2f5;
             color: #333;
-            overflow: hidden; /* Evitar scroll */
+            overflow: hidden;
         }
 
         #video-container {
@@ -40,35 +40,67 @@
             transition: opacity 1s ease-in-out;
         }
 
-        #cortinilla img {
-            max-width: 400px;
-            animation: zoomIn 3s ease-out forwards;
-        }
-        
-        #cortinilla h1 {
-            margin-top: 20px;
-            color: #142850;
+        #cortinilla img { max-width: 400px; animation: zoomIn 3s ease-out forwards; }
+        #cortinilla h1 { margin-top: 20px; color: #142850; margin-bottom: 40px; opacity: 0; animation: fadeIn 1s 1.5s forwards; }
+
+        @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1.1); opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Botón de inicio */
+        #start-btn {
+            padding: 15px 40px;
+            font-size: 1.5rem;
+            background-color: #0078d7;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,120,215,0.3);
+            transition: transform 0.2s, background-color 0.2s;
             opacity: 0;
-            animation: fadeIn 1s 1.5s forwards;
+            animation: fadeIn 1s 2s forwards;
+        }
+        #start-btn:hover { background-color: #005a9e; transform: scale(1.05); }
+
+        /* --- Menú de Capítulos --- */
+        #chapters-menu {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            z-index: 150;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            max-width: 250px;
         }
 
-        @keyframes zoomIn {
-            from { transform: scale(0.8); opacity: 0; }
-            to { transform: scale(1.1); opacity: 1; }
+        #chapters-menu h3 {
+            margin: 0 0 10px 0;
+            font-size: 1rem;
+            color: #142850;
+            border-bottom: 2px solid #0078d7;
+            padding-bottom: 5px;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        .chapter-item {
+            padding: 8px 10px;
+            margin: 5px 0;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            color: #555;
+            transition: background 0.2s, color 0.2s;
         }
+        .chapter-item:hover { background-color: #e5f1fb; color: #0078d7; }
+        .chapter-item.active { background-color: #0078d7; color: white; font-weight: bold; }
 
         /* --- Diapositivas --- */
         .slide {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             display: flex;
             opacity: 0;
             transition: opacity 0.5s ease-in-out;
@@ -76,80 +108,17 @@
             box-sizing: border-box;
             background-color: #f0f2f5;
         }
+        .slide.active { opacity: 1; z-index: 10; }
 
-        .slide.active {
-            opacity: 1;
-            z-index: 10;
-        }
+        .left-panel { flex: 1; padding-right: 40px; display: flex; flex-direction: column; justify-content: center; }
+        .right-panel { flex: 1; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
 
-        /* Layout de la slide */
-        .left-panel {
-            flex: 1;
-            padding-right: 40px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
+        h1.title { color: #142850; font-size: 3.5rem; margin-bottom: 10px; border-bottom: 5px solid #0078d7; padding-bottom: 10px; }
+        .bullets { font-size: 2rem; line-height: 1.6; color: #3c3c3c; }
+        .bullets p { margin: 15px 0; }
+        .diagram { max-width: 100%; max-height: 80vh; object-fit: contain; clip-path: inset(0 0 5% 0); }
 
-        .right-panel {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative; /* Para el recorte */
-            overflow: hidden;
-        }
-
-        h1.title {
-            color: #142850;
-            font-size: 3.5rem;
-            margin-bottom: 10px;
-            border-bottom: 5px solid #0078d7;
-            padding-bottom: 10px;
-        }
-
-        .bullets {
-            font-size: 2rem;
-            line-height: 1.6;
-            color: #3c3c3c;
-        }
-        
-        .bullets p {
-            margin: 15px 0;
-        }
-
-        /* Imagen de ITIL (con recorte inferior CSS) */
-        .diagram {
-            max-width: 100%;
-            max-height: 80vh;
-            object-fit: contain;
-            /* Clip para la marca de agua: recorta el 5% inferior aprox */
-            clip-path: inset(0 0 5% 0); 
-        }
-
-        /* Marca de agua Netec */
-        #watermark {
-            position: absolute;
-            top: 30px;
-            right: 40px;
-            width: 150px;
-            z-index: 50;
-        }
-
-        /* Botón de inicio */
-        #start-btn {
-            position: absolute;
-            z-index: 200;
-            padding: 15px 30px;
-            font-size: 1.5rem;
-            background-color: #0078d7;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        #start-btn:hover { background-color: #005a9e; }
+        #watermark { position: absolute; top: 30px; right: 40px; width: 150px; z-index: 50; }
 
         /* --- Controles del Reproductor --- */
         #controls-container {
@@ -157,63 +126,31 @@
             bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
-            background-color: rgba(255, 255, 255, 0.9);
-            padding: 10px 30px;
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 10px 25px;
             border-radius: 30px;
             display: flex;
             align-items: center;
-            gap: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            gap: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             z-index: 150;
-            opacity: 0; /* Oculto hasta que inicie */
+            opacity: 0;
             transition: opacity 0.5s ease;
         }
 
-        .control-btn {
-            background: none;
-            border: none;
-            font-size: 1.8rem;
-            color: #142850;
-            cursor: pointer;
-            outline: none;
-            transition: transform 0.1s ease;
-        }
+        .control-btn { background: none; border: none; font-size: 1.5rem; color: #142850; cursor: pointer; transition: transform 0.1s ease; }
         .control-btn:hover { transform: scale(1.1); color: #0078d7; }
-        .control-btn:active { transform: scale(0.9); }
 
-        #progress-bar {
-            width: 200px;
-            height: 6px;
-            background-color: #ccc;
-            border-radius: 3px;
-            overflow: hidden;
-            position: relative;
-        }
+        #progress-bar { width: 300px; height: 6px; background-color: #ccc; border-radius: 3px; position: relative; cursor: pointer; }
+        #progress-fill { height: 100%; width: 0%; background-color: #0078d7; transition: width 0.1s linear; }
 
-        #progress-fill {
-            height: 100%;
-            width: 0%;
-            background-color: #0078d7;
-            transition: width 0.1s linear;
-        }
+        .time-display { font-size: 0.9rem; color: #666; font-weight: 600; font-variant-numeric: tabular-nums; }
 
     </style>
 </head>
 <body>
 
     <div id="video-container">
-        <button id="start-btn">Iniciar Curso</button>
-
-        <!-- Controles de Navegación -->
-        <div id="controls-container">
-            <button id="btn-prev" class="control-btn" title="Anterior">⏮️</button>
-            <button id="btn-play-pause" class="control-btn" title="Pausar">⏸️</button>
-            <div id="progress-bar">
-                <div id="progress-fill"></div>
-            </div>
-            <button id="btn-next" class="control-btn" title="Siguiente">⏭️</button>
-        </div>
-
         <!-- Marca de agua global -->
         <img id="watermark" src="netec_logo_transparent.png" alt="Netec Logo" style="display:none;">
 
@@ -221,6 +158,25 @@
         <div id="cortinilla">
             <img src="netec_logo_color.png" alt="Netec">
             <h1>ITIL Foundation (versión 5)</h1>
+            <button id="start-btn">Iniciar Curso</button>
+        </div>
+
+        <!-- Menú de Capítulos -->
+        <div id="chapters-menu">
+            <h3>📖 Índice del Módulo</h3>
+            <div id="chapter-list"></div>
+        </div>
+
+        <!-- Controles de Navegación -->
+        <div id="controls-container">
+            <button id="btn-prev" class="control-btn" title="Anterior">⏮️</button>
+            <button id="btn-play-pause" class="control-btn" title="Pausar">⏸️</button>
+            <span id="time-current" class="time-display">00:00</span>
+            <div id="progress-bar" onclick="seek(event)">
+                <div id="progress-fill"></div>
+            </div>
+            <span id="time-total" class="time-display">00:00</span>
+            <button id="btn-next" class="control-btn" title="Siguiente">⏭️</button>
         </div>
 
         <!-- Slides -->
@@ -245,9 +201,7 @@
                     <p>• Biblioteca de Infraestructura de TI</p>
                 </div>
             </div>
-            <div class="right-panel">
-                <img class="diagram" src="ITIL5_Fig1.2_EN_wtmd.png" alt="Historia">
-            </div>
+            <div class="right-panel"><img class="diagram" src="ITIL5_Fig1.2_EN_wtmd.png" alt="Historia"></div>
         </div>
 
         <div id="slide-03_library" class="slide">
@@ -259,9 +213,7 @@
                     <p>• Etapa 3: Valor (ITIL 4)</p>
                 </div>
             </div>
-            <div class="right-panel">
-                <img class="diagram" src="ITIL5_Fig1.3_EN_wtmd.png" alt="Evolucion">
-            </div>
+            <div class="right-panel"><img class="diagram" src="ITIL5_Fig1.3_EN_wtmd.png" alt="Evolucion"></div>
         </div>
 
         <div id="slide-04_evolucion_1" class="slide">
@@ -273,9 +225,7 @@
                     <p>• Cocreación de valor</p>
                 </div>
             </div>
-            <div class="right-panel">
-                <img class="diagram" src="ITIL5_Fig1.1A_EN_wtmd.png" alt="v5">
-            </div>
+            <div class="right-panel"><img class="diagram" src="ITIL5_Fig1.1A_EN_wtmd.png" alt="v5"></div>
         </div>
 
         <div id="slide-05_evolucion_2" class="slide">
@@ -287,9 +237,7 @@
                     <p>• Valor real para el cliente</p>
                 </div>
             </div>
-            <div class="right-panel">
-                <img class="diagram" src="ITIL5_Fig1.1B_EN_wtmd.png" alt="Digital">
-            </div>
+            <div class="right-panel"><img class="diagram" src="ITIL5_Fig1.1B_EN_wtmd.png" alt="Digital"></div>
         </div>
 
         <div id="slide-06_hoy" class="slide">
@@ -301,9 +249,7 @@
                     <p>• Para todos, no solo TI</p>
                 </div>
             </div>
-            <div class="right-panel">
-                <img class="diagram" src="ITIL5_Fig1.1C_EN_wtmd.png" alt="Hoy">
-            </div>
+            <div class="right-panel"><img class="diagram" src="ITIL5_Fig1.1C_EN_wtmd.png" alt="Hoy"></div>
         </div>
 
         <div id="slide-07_framework" class="slide">
@@ -315,9 +261,7 @@
                     <p>• Crecimiento sostenible</p>
                 </div>
             </div>
-            <div class="right-panel">
-                <img class="diagram" src="ITIL5_Fig1.4_EN_wtmd.png" alt="Framework">
-            </div>
+            <div class="right-panel"><img class="diagram" src="ITIL5_Fig1.4_EN_wtmd.png" alt="Framework"></div>
         </div>
 
         <div id="slide-08_cierre" class="slide">
@@ -329,151 +273,190 @@
                     <p>• ¡Siguiente video!</p>
                 </div>
             </div>
-            <div class="right-panel">
-                <img class="diagram" src="ITIL5_Fig0.1_EN_wtmd.png" alt="Cierre">
-            </div>
+            <div class="right-panel"><img class="diagram" src="ITIL5_Fig0.1_EN_wtmd.png" alt="Cierre"></div>
         </div>
     </div>
 
-    <!-- Audios (asumimos que están en la misma carpeta o ruta relativa) -->
-    <audio id="audio-01_intro" src="01_intro.mp3"></audio>
-    <audio id="audio-02_historia" src="02_historia.mp3"></audio>
-    <audio id="audio-03_library" src="03_library.mp3"></audio>
-    <audio id="audio-04_evolucion_1" src="04_evolucion_1.mp3"></audio>
-    <audio id="audio-05_evolucion_2" src="05_evolucion_2.mp3"></audio>
-    <audio id="audio-06_hoy" src="06_hoy.mp3"></audio>
-    <audio id="audio-07_framework" src="07_framework.mp3"></audio>
-    <audio id="audio-08_cierre" src="08_cierre.mp3"></audio>
+    <!-- Audios -->
+    <audio id="audio-01_intro" src="01_intro.mp3" preload="metadata"></audio>
+    <audio id="audio-02_historia" src="02_historia.mp3" preload="metadata"></audio>
+    <audio id="audio-03_library" src="03_library.mp3" preload="metadata"></audio>
+    <audio id="audio-04_evolucion_1" src="04_evolucion_1.mp3" preload="metadata"></audio>
+    <audio id="audio-05_evolucion_2" src="05_evolucion_2.mp3" preload="metadata"></audio>
+    <audio id="audio-06_hoy" src="06_hoy.mp3" preload="metadata"></audio>
+    <audio id="audio-07_framework" src="07_framework.mp3" preload="metadata"></audio>
+    <audio id="audio-08_cierre" src="08_cierre.mp3" preload="metadata"></audio>
 
     <script>
         const sequence = [
-            "01_intro", "02_historia", "03_library", 
-            "04_evolucion_1", "05_evolucion_2", "06_hoy", 
-            "07_framework", "08_cierre"
+            { id: "01_intro", title: "¿Qué es ITIL?" },
+            { id: "02_historia", title: "El Origen" },
+            { id: "03_library", title: "Evolución" },
+            { id: "04_evolucion_1", title: "ITIL v5" },
+            { id: "05_evolucion_2", title: "Todo es Digital" },
+            { id: "06_hoy", title: "Lenguaje Común" },
+            { id: "07_framework", title: "El Marco Actual" },
+            { id: "08_cierre", title: "Certificaciones" }
         ];
         
         let currentIndex = 0;
         let isPlaying = false;
-        let isCourseStarted = false;
+        let totalDuration = 0;
+        let elapsedBeforeCurrent = 0;
+        let updateInterval;
 
-        // Elementos UI
         const btnPlayPause = document.getElementById('btn-play-pause');
-        const btnNext = document.getElementById('btn-next');
-        const btnPrev = document.getElementById('btn-prev');
+        const timeCurrent = document.getElementById('time-current');
+        const timeTotal = document.getElementById('time-total');
         const progressFill = document.getElementById('progress-fill');
-        const controls = document.getElementById('controls-container');
+        const chapterList = document.getElementById('chapter-list');
+
+        // Inicializar duraciones totales y el menú de capítulos
+        window.onload = () => {
+            let loadedCount = 0;
+            sequence.forEach((sec, idx) => {
+                // Crear botón en el menú
+                let div = document.createElement('div');
+                div.className = 'chapter-item';
+                div.innerText = `${idx + 1}. ${sec.title}`;
+                div.id = `chapter-btn-${idx}`;
+                div.onclick = () => saltarASeccion(idx);
+                chapterList.appendChild(div);
+
+                // Calcular duración total
+                const audio = document.getElementById(`audio-${sec.id}`);
+                audio.onloadedmetadata = () => {
+                    sec.duration = audio.duration;
+                    loadedCount++;
+                    if (loadedCount === sequence.length) {
+                        totalDuration = sequence.reduce((acc, val) => acc + val.duration, 0);
+                        timeTotal.innerText = formatTime(totalDuration);
+                    }
+                };
+            });
+        };
+
+        function formatTime(seconds) {
+            const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+            const s = Math.floor(seconds % 60).toString().padStart(2, '0');
+            return `${m}:${s}`;
+        }
 
         document.getElementById('start-btn').addEventListener('click', function() {
             this.style.display = 'none';
-            iniciarCurso();
-        });
-
-        function iniciarCurso() {
-            const cortinilla = document.getElementById('cortinilla');
-            const watermark = document.getElementById('watermark');
+            document.getElementById('title-intro').style.display = 'none';
             
-            // Simular 3 segundos de cortinilla
             setTimeout(() => {
-                cortinilla.style.opacity = '0';
+                document.getElementById('cortinilla').style.opacity = '0';
                 setTimeout(() => {
-                    cortinilla.style.display = 'none';
-                    watermark.style.display = 'block';
-                    controls.style.opacity = '1';
-                    isCourseStarted = true;
+                    document.getElementById('cortinilla').style.display = 'none';
+                    document.getElementById('watermark').style.display = 'block';
+                    document.getElementById('controls-container').style.opacity = '1';
+                    document.getElementById('chapters-menu').style.opacity = '1';
                     isPlaying = true;
                     reproducirSeccion(0);
+                    iniciarReloj();
                 }, 1000);
-            }, 3000);
+            }, 1000);
+        });
+
+        function saltarASeccion(index) {
+            const oldAudio = document.getElementById(`audio-${sequence[currentIndex].id}`);
+            if (oldAudio) { oldAudio.pause(); oldAudio.currentTime = 0; }
+            
+            isPlaying = true;
+            btnPlayPause.innerText = '⏸️';
+            reproducirSeccion(index);
         }
 
         function reproducirSeccion(index) {
             if (index < 0 || index >= sequence.length) return;
             
-            // Detener audio anterior si existe
-            const oldAudio = document.getElementById(`audio-${sequence[currentIndex]}`);
-            if (oldAudio) {
-                oldAudio.pause();
-                oldAudio.currentTime = 0;
-            }
-
             currentIndex = index;
 
-            // Mostrar slide actual
-            document.querySelectorAll('.slide').forEach(el => el.classList.remove('active'));
-            const currentId = sequence[currentIndex];
-            document.getElementById(`slide-${currentId}`).classList.add('active');
+            // Calcular tiempo transcurrido de slides anteriores
+            elapsedBeforeCurrent = 0;
+            for(let i=0; i<currentIndex; i++){
+                elapsedBeforeCurrent += sequence[i].duration;
+            }
 
-            // Actualizar barra de progreso general
-            const pct = ((currentIndex + 1) / sequence.length) * 100;
-            progressFill.style.width = pct + '%';
+            // Actualizar UI
+            document.querySelectorAll('.slide').forEach(el => el.classList.remove('active'));
+            document.getElementById(`slide-${sequence[currentIndex].id}`).classList.add('active');
+            
+            document.querySelectorAll('.chapter-item').forEach(el => el.classList.remove('active'));
+            document.getElementById(`chapter-btn-${currentIndex}`).classList.add('active');
 
             // Reproducir audio
-            const audio = document.getElementById(`audio-${currentId}`);
+            const audio = document.getElementById(`audio-${sequence[currentIndex].id}`);
             if (audio) {
                 if (isPlaying) audio.play();
-                
                 audio.onended = () => {
                     if (currentIndex + 1 < sequence.length) {
                         reproducirSeccion(currentIndex + 1);
                     } else {
-                        btnPlayPause.innerText = '🔁'; // Icono reiniciar
+                        btnPlayPause.innerText = '🔁';
                         isPlaying = false;
+                        clearInterval(updateInterval);
                     }
                 };
             }
         }
 
-        // --- Controles Lógicos ---
+        function iniciarReloj() {
+            updateInterval = setInterval(() => {
+                if (!isPlaying) return;
+                const audio = document.getElementById(`audio-${sequence[currentIndex].id}`);
+                if (audio) {
+                    const currentTotal = elapsedBeforeCurrent + audio.currentTime;
+                    timeCurrent.innerText = formatTime(currentTotal);
+                    progressFill.style.width = (currentTotal / totalDuration * 100) + '%';
+                }
+            }, 100);
+        }
+
+        // Controles de botones
         btnPlayPause.addEventListener('click', () => {
-            if (!isCourseStarted) return;
-            const audio = document.getElementById(`audio-${sequence[currentIndex]}`);
-            
+            const audio = document.getElementById(`audio-${sequence[currentIndex].id}`);
             if (currentIndex >= sequence.length - 1 && audio.ended) {
-                // Reiniciar curso
-                isPlaying = true;
-                btnPlayPause.innerText = '⏸️';
-                reproducirSeccion(0);
+                saltarASeccion(0); // Reiniciar
                 return;
             }
-
             if (isPlaying) {
-                if (audio) audio.pause();
-                isPlaying = false;
-                btnPlayPause.innerText = '▶️';
+                audio.pause(); isPlaying = false; btnPlayPause.innerText = '▶️';
             } else {
-                if (audio) audio.play();
-                isPlaying = true;
-                btnPlayPause.innerText = '⏸️';
+                audio.play(); isPlaying = true; btnPlayPause.innerText = '⏸️';
             }
         });
 
-        btnNext.addEventListener('click', () => {
-            if (!isCourseStarted) return;
-            if (currentIndex + 1 < sequence.length) {
-                reproducirSeccion(currentIndex + 1);
-                if (!isPlaying) {
-                    isPlaying = true;
-                    btnPlayPause.innerText = '⏸️';
-                }
-            }
+        document.getElementById('btn-next').addEventListener('click', () => {
+            if (currentIndex + 1 < sequence.length) saltarASeccion(currentIndex + 1);
         });
 
-        btnPrev.addEventListener('click', () => {
-            if (!isCourseStarted) return;
-            const audio = document.getElementById(`audio-${sequence[currentIndex]}`);
-            
-            // Si el audio va avanzado más de 2 segundos, simplemente lo reiniciamos
+        document.getElementById('btn-prev').addEventListener('click', () => {
+            const audio = document.getElementById(`audio-${sequence[currentIndex].id}`);
             if (audio && audio.currentTime > 2) {
-                audio.currentTime = 0;
+                audio.currentTime = 0; // Reiniciar slide actual
             } else if (currentIndex > 0) {
-                // Si está al principio, saltamos al slide anterior
-                reproducirSeccion(currentIndex - 1);
-                if (!isPlaying) {
-                    isPlaying = true;
-                    btnPlayPause.innerText = '⏸️';
-                }
+                saltarASeccion(currentIndex - 1);
             }
         });
+
+        // Click en barra de progreso (simplificado, salta a la sección correspondiente)
+        function seek(e) {
+            const rect = document.getElementById('progress-bar').getBoundingClientRect();
+            const pos = (e.clientX - rect.left) / rect.width;
+            const targetTime = pos * totalDuration;
+            
+            let accum = 0;
+            for(let i=0; i<sequence.length; i++) {
+                accum += sequence[i].duration;
+                if(targetTime <= accum) {
+                    saltarASeccion(i);
+                    break;
+                }
+            }
+        }
     </script>
 </body>
 </html>
