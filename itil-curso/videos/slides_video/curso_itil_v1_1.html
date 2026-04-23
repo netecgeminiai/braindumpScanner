@@ -301,51 +301,40 @@
         
         let currentIndex = 0;
         let isPlaying = false;
-        let totalDuration = 0;
-        let elapsedBeforeCurrent = 0;
+        let isCourseStarted = false;
         let updateInterval;
 
         const btnPlayPause = document.getElementById('btn-play-pause');
         const timeCurrent = document.getElementById('time-current');
-        const timeTotal = document.getElementById('time-total');
         const progressFill = document.getElementById('progress-fill');
         const chapterList = document.getElementById('chapter-list');
 
-        // Inicializar duraciones totales y el menú de capítulos
+        // Función para dar formato a los tiempos
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return "00:00";
+            const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+            const s = Math.floor(seconds % 60).toString().padStart(2, '0');
+            return `${m}:${s}`;
+        }
+
+        // Crear el menú de capítulos al cargar
         window.onload = () => {
-            let loadedCount = 0;
             sequence.forEach((sec, idx) => {
-                // Crear botón en el menú
                 let div = document.createElement('div');
                 div.className = 'chapter-item';
                 div.innerText = `${idx + 1}. ${sec.title}`;
                 div.id = `chapter-btn-${idx}`;
                 div.onclick = () => saltarASeccion(idx);
                 chapterList.appendChild(div);
-
-                // Calcular duración total
-                const audio = document.getElementById(`audio-${sec.id}`);
-                audio.onloadedmetadata = () => {
-                    sec.duration = audio.duration;
-                    loadedCount++;
-                    if (loadedCount === sequence.length) {
-                        totalDuration = sequence.reduce((acc, val) => acc + val.duration, 0);
-                        timeTotal.innerText = formatTime(totalDuration);
-                    }
-                };
             });
         };
 
-        function formatTime(seconds) {
-            const m = Math.floor(seconds / 60).toString().padStart(2, '0');
-            const s = Math.floor(seconds % 60).toString().padStart(2, '0');
-            return `${m}:${s}`;
-        }
-
+        // EVENTO: Clic en Iniciar Curso
         document.getElementById('start-btn').addEventListener('click', function() {
             this.style.display = 'none';
             document.getElementById('title-intro').style.display = 'none';
             
+            // Disolvemos la cortinilla
             setTimeout(() => {
                 document.getElementById('cortinilla').style.opacity = '0';
                 setTimeout(() => {
@@ -353,110 +342,121 @@
                     document.getElementById('watermark').style.display = 'block';
                     document.getElementById('controls-container').style.opacity = '1';
                     document.getElementById('chapters-menu').style.opacity = '1';
+                    
+                    isCourseStarted = true;
                     isPlaying = true;
                     reproducirSeccion(0);
                     iniciarReloj();
                 }, 1000);
-            }, 1000);
+            }, 1500); // 1.5s de cortinilla
         });
 
-        function saltarASeccion(index) {
-            const oldAudio = document.getElementById(`audio-${sequence[currentIndex].id}`);
-            if (oldAudio) { oldAudio.pause(); oldAudio.currentTime = 0; }
+        // Función para reproducir una sección específica
+        function reproducirSeccion(index) {
+            if (index < 0 || index >= sequence.length) return;
             
+            // Detener el audio actual si existe
+            const oldAudio = document.getElementById(`audio-${sequence[currentIndex].id}`);
+            if (oldAudio) { 
+                oldAudio.pause(); 
+                oldAudio.currentTime = 0; 
+            }
+            
+            currentIndex = index;
+
+            // Mostrar la Slide correcta
+            document.querySelectorAll('.slide').forEach(el => el.classList.remove('active'));
+            document.getElementById(`slide-${sequence[currentIndex].id}`).classList.add('active');
+            
+            // Marcar el capítulo activo en el menú
+            document.querySelectorAll('.chapter-item').forEach(el => el.classList.remove('active'));
+            document.getElementById(`chapter-btn-${currentIndex}`).classList.add('active');
+
+            // Reproducir el nuevo audio
+            const currentAudio = document.getElementById(`audio-${sequence[currentIndex].id}`);
+            if (currentAudio) {
+                if (isPlaying) {
+                    // Prevenir error de autoplay en algunos navegadores
+                    let playPromise = currentAudio.play();
+                    if (playPromise !== undefined) {
+                        playPromise.catch(error => {
+                            console.log("Autoplay bloqueado:", error);
+                            isPlaying = false;
+                            btnPlayPause.innerText = '▶️';
+                        });
+                    }
+                }
+                
+                // Cuando termina este audio, pasar al siguiente
+                currentAudio.onended = () => {
+                    if (currentIndex + 1 < sequence.length) {
+                        reproducirSeccion(currentIndex + 1);
+                    } else {
+                        // Fin del curso
+                        btnPlayPause.innerText = '🔁';
+                        isPlaying = false;
+                    }
+                };
+            } else {
+                // Si el archivo de audio no existe (fallback), pasar a la siguiente slide tras 3s
+                setTimeout(() => {
+                    if (isPlaying && currentIndex + 1 < sequence.length) reproducirSeccion(currentIndex + 1);
+                }, 3000);
+            }
+        }
+
+        function saltarASeccion(index) {
+            if (!isCourseStarted) return;
             isPlaying = true;
             btnPlayPause.innerText = '⏸️';
             reproducirSeccion(index);
         }
 
-        function reproducirSeccion(index) {
-            if (index < 0 || index >= sequence.length) return;
-            
-            currentIndex = index;
-
-            // Calcular tiempo transcurrido de slides anteriores
-            elapsedBeforeCurrent = 0;
-            for(let i=0; i<currentIndex; i++){
-                elapsedBeforeCurrent += sequence[i].duration;
-            }
-
-            // Actualizar UI
-            document.querySelectorAll('.slide').forEach(el => el.classList.remove('active'));
-            document.getElementById(`slide-${sequence[currentIndex].id}`).classList.add('active');
-            
-            document.querySelectorAll('.chapter-item').forEach(el => el.classList.remove('active'));
-            document.getElementById(`chapter-btn-${currentIndex}`).classList.add('active');
-
-            // Reproducir audio
-            const audio = document.getElementById(`audio-${sequence[currentIndex].id}`);
-            if (audio) {
-                if (isPlaying) audio.play();
-                audio.onended = () => {
-                    if (currentIndex + 1 < sequence.length) {
-                        reproducirSeccion(currentIndex + 1);
-                    } else {
-                        btnPlayPause.innerText = '🔁';
-                        isPlaying = false;
-                        clearInterval(updateInterval);
-                    }
-                };
-            }
-        }
-
+        // Lógica simplificada del reloj (Slide actual)
         function iniciarReloj() {
             updateInterval = setInterval(() => {
                 if (!isPlaying) return;
                 const audio = document.getElementById(`audio-${sequence[currentIndex].id}`);
                 if (audio) {
-                    const currentTotal = elapsedBeforeCurrent + audio.currentTime;
-                    timeCurrent.innerText = formatTime(currentTotal);
-                    progressFill.style.width = (currentTotal / totalDuration * 100) + '%';
+                    timeCurrent.innerText = formatTime(audio.currentTime);
+                    const dur = isNaN(audio.duration) ? 1 : audio.duration;
+                    progressFill.style.width = (audio.currentTime / dur * 100) + '%';
                 }
             }, 100);
         }
 
-        // Controles de botones
+        // Controles de botones Play/Pausa, Sig, Prev
         btnPlayPause.addEventListener('click', () => {
+            if (!isCourseStarted) return;
             const audio = document.getElementById(`audio-${sequence[currentIndex].id}`);
-            if (currentIndex >= sequence.length - 1 && audio.ended) {
-                saltarASeccion(0); // Reiniciar
-                return;
+            
+            if (currentIndex >= sequence.length - 1 && audio && audio.ended) {
+                isPlaying = true; btnPlayPause.innerText = '⏸️'; saltarASeccion(0); return;
             }
+            
             if (isPlaying) {
-                audio.pause(); isPlaying = false; btnPlayPause.innerText = '▶️';
+                if(audio) audio.pause(); 
+                isPlaying = false; btnPlayPause.innerText = '▶️';
             } else {
-                audio.play(); isPlaying = true; btnPlayPause.innerText = '⏸️';
+                if(audio) audio.play(); 
+                isPlaying = true; btnPlayPause.innerText = '⏸️';
             }
         });
 
         document.getElementById('btn-next').addEventListener('click', () => {
+            if (!isCourseStarted) return;
             if (currentIndex + 1 < sequence.length) saltarASeccion(currentIndex + 1);
         });
 
         document.getElementById('btn-prev').addEventListener('click', () => {
+            if (!isCourseStarted) return;
             const audio = document.getElementById(`audio-${sequence[currentIndex].id}`);
-            if (audio && audio.currentTime > 2) {
-                audio.currentTime = 0; // Reiniciar slide actual
+            if (audio && audio.currentTime > 3) {
+                audio.currentTime = 0; // Reiniciar audio actual si avanzó más de 3 seg
             } else if (currentIndex > 0) {
                 saltarASeccion(currentIndex - 1);
             }
         });
-
-        // Click en barra de progreso (simplificado, salta a la sección correspondiente)
-        function seek(e) {
-            const rect = document.getElementById('progress-bar').getBoundingClientRect();
-            const pos = (e.clientX - rect.left) / rect.width;
-            const targetTime = pos * totalDuration;
-            
-            let accum = 0;
-            for(let i=0; i<sequence.length; i++) {
-                accum += sequence[i].duration;
-                if(targetTime <= accum) {
-                    saltarASeccion(i);
-                    break;
-                }
-            }
-        }
     </script>
 </body>
 </html>
