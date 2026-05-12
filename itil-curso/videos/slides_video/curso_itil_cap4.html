@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ITIL Foundation v5 - Capítulo 4: Conceptos Clave de Servicios</title>
+    <style>
+        body, html { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; color: #333; overflow: hidden; }
+        #video-container { position: relative; width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center; }
+        #cortinilla { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; transition: opacity 1s ease-in-out; }
+        #cortinilla img { max-width: 400px; animation: zoomIn 3s ease-out forwards; }
+        #cortinilla h1 { margin-top: 20px; color: #142850; margin-bottom: 40px; opacity: 0; animation: fadeIn 1s 1.5s forwards; text-align: center; }
+        @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1.1); opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        #start-btn { padding: 15px 40px; font-size: 1.5rem; background-color: #0078d7; color: white; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,120,215,0.3); transition: transform 0.2s; opacity: 0; animation: fadeIn 1s 2s forwards; }
+        #start-btn:hover { background-color: #005a9e; transform: scale(1.05); }
+        #chapters-menu { position: absolute; top: 20px; left: 20px; background-color: rgba(255, 255, 255, 0.95); padding: 15px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); z-index: 150; opacity: 0; transition: opacity 0.5s ease; max-width: 280px; }
+        #chapters-menu h3 { margin: 0 0 10px 0; font-size: 1rem; color: #142850; border-bottom: 2px solid #0078d7; padding-bottom: 5px; }
+        .chapter-item { padding: 8px 10px; margin: 5px 0; cursor: pointer; border-radius: 5px; font-size: 0.9rem; color: #555; transition: background 0.2s, color 0.2s; }
+        .chapter-item:hover { background-color: #e5f1fb; color: #0078d7; }
+        .chapter-item.active { background-color: #0078d7; color: white; font-weight: bold; }
+        .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; opacity: 0; transition: opacity 0.5s ease-in-out; padding: 50px; box-sizing: border-box; background-color: #f0f2f5; }
+        .slide.active { opacity: 1; z-index: 10; }
+        .left-panel { flex: 1; padding-right: 40px; display: flex; flex-direction: column; justify-content: center; }
+        .right-panel { flex: 1.2; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+        h1.title { color: #142850; font-size: 3rem; margin-bottom: 10px; border-bottom: 5px solid #0078d7; padding-bottom: 10px; }
+        .bullets { font-size: 1.8rem; line-height: 1.6; color: #3c3c3c; }
+        .diagram { max-width: 100%; max-height: 85vh; object-fit: contain; clip-path: inset(0 0 5% 0); }
+        #watermark { position: absolute; top: 30px; right: 40px; width: 150px; z-index: 50; }
+        #controls-container { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: rgba(255, 255, 255, 0.95); padding: 10px 25px; border-radius: 30px; display: flex; align-items: center; gap: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 150; opacity: 0; transition: opacity 0.5s ease; }
+        .control-btn { background: none; border: none; font-size: 1.5rem; color: #142850; cursor: pointer; transition: transform 0.1s ease; }
+        .control-btn:hover { transform: scale(1.1); color: #0078d7; }
+        #progress-bar { width: 300px; height: 6px; background-color: #ccc; border-radius: 3px; position: relative; cursor: pointer; }
+        #progress-fill { height: 100%; width: 0%; background-color: #0078d7; transition: width 0.1s linear; }
+        .time-display { font-size: 0.9rem; color: #666; font-weight: 600; font-variant-numeric: tabular-nums; }
+    </style>
+</head>
+<body>
+    <div id="video-container">
+        <img id="watermark" src="netec_logo_transparent.png" alt="Netec Logo" style="display:none;">
+        <div id="cortinilla">
+            <img src="netec_logo_color.png" alt="Netec">
+            <h1 id="title-intro">ITIL Foundation (versión 5)<br><span style="font-size: 0.7em; color: #555;">Capítulo 4: Conceptos Clave</span></h1>
+            <button id="start-btn">Iniciar Módulo</button>
+        </div>
+
+        <div id="chapters-menu">
+            <h3>📖 Índice del Capítulo 4</h3>
+            <div id="chapter-list"></div>
+        </div>
+        <div id="controls-container">
+            <button id="btn-prev" class="control-btn" title="Anterior">⏮️</button>
+            <button id="btn-play-pause" class="control-btn" title="Pausar">⏸️</button>
+            <span id="time-current" class="time-display">00:00</span>
+            <div id="progress-bar" onclick="seek(event)"><div id="progress-fill"></div></div>
+            <span id="time-total" class="time-display">00:00</span>
+            <button id="btn-next" class="control-btn" title="Siguiente">⏭️</button>
+        </div>
+
+        <!-- SLIDES CAPÍTULO 4 -->
+        <div id="slide-01_valor" class="slide">
+            <div class="left-panel"><h1 class="title">1. Valor y Cocreación</h1><div class="bullets"><p>• El valor es <b>percibido</b>.</p><p>• Cocreación: Proveedor + Consumidor.</p><p>• Partes Interesadas: Cliente, Usuario, Patrocinador.</p></div></div>
+            <div class="right-panel"><img class="diagram" src="ITIL5_Fig1.4_EN_wtmd.png" alt="Valor"></div>
+        </div>
+        <div id="slide-02_productos_servicios" class="slide">
+            <div class="left-panel"><h1 class="title">2. Productos y Servicios</h1><div class="bullets"><p>• <b>Servicio:</b> Facilita resultados sin asumir riesgos/costos.</p><p>• <b>Producto:</b> Configuración de recursos (Los bloques de LEGO).</p><p>• <b>Oferta:</b> Bienes, Acceso y Acciones.</p></div></div>
+            <div class="right-panel"><img class="diagram" src="ITIL5_Fig1.4_EN_wtmd.png" alt="Productos"></div>
+        </div>
+        <div id="slide-03_relaciones" class="slide">
+            <div class="left-panel"><h1 class="title">3. Relaciones de Servicio</h1><div class="bullets"><p>• <b>Provisión:</b> Lo que hace el proveedor.</p><p>• <b>Consumo:</b> Lo que hace el cliente.</p><p>• <b>Gestión:</b> Actividades conjuntas para cocrear valor.</p></div></div>
+            <div class="right-panel"><img class="diagram" src="ITIL5_Fig3.1_EN_wtmd.png" alt="Relaciones"></div>
+        </div>
+        <div id="slide-04_resultados_costos" class="slide">
+            <div class="left-panel"><h1 class="title">4. Resultados, Costos y Riesgos</h1><div class="bullets"><p>• <b>Salida (Output) vs Resultado (Outcome)</b>.</p><p>• Costos/Riesgos Eliminados.</p><p>• Costos/Riesgos Impuestos.</p></div></div>
+            <div class="right-panel"><img class="diagram" src="ITIL5_Fig1.4_EN_wtmd.png" alt="Resultados"></div>
+        </div>
+        <div id="slide-05_utilidad_garantia" class="slide">
+            <div class="left-panel"><h1 class="title">5. Utilidad y Garantía</h1><div class="bullets"><p>• <b>Utilidad:</b> Apto para el propósito (Qué hace).</p><p>• <b>Garantía:</b> Apto para el uso (Cómo se entrega).</p><p>• Disponibilidad, Capacidad, Seguridad y Continuidad.</p></div></div>
+            <div class="right-panel"><img class="diagram" src="ITIL5_Fig1.4_EN_wtmd.png" alt="Utilidad Garantia"></div>
+        </div>
+    </div>
+
+    <!-- Audios (Reemplazar src cuando se generen con ElevenLabs) -->
+    <audio id="audio-01_valor" src="audio_v4.1.mp3"></audio>
+    <audio id="audio-02_productos_servicios" src="audio_v4.2.mp3"></audio>
+    <audio id="audio-03_relaciones" src="audio_v4.3.mp3"></audio>
+    <audio id="audio-04_resultados_costos" src="audio_v4.4.mp3"></audio>
+    <audio id="audio-05_utilidad_garantia" src="audio_v4.5.mp3"></audio>
+
+    <script>
+        const sequence = [
+            { id: "01_valor", title: "1. Valor y Cocreación" },
+            { id: "02_productos_servicios", title: "2. Productos y Ofertas" },
+            { id: "03_relaciones", title: "3. Relaciones de Servicio" },
+            { id: "04_resultados_costos", title: "4. Resultados y Costos" },
+            { id: "05_utilidad_garantia", title: "5. Utilidad y Garantía" }
+        ];
+        
+        let currentIndex = 0; let isPlaying = false; let isCourseStarted = false; let updateInterval;
+        const btnPlayPause = document.getElementById('btn-play-pause'); const timeCurrent = document.getElementById('time-current'); const progressFill = document.getElementById('progress-fill'); const chapterList = document.getElementById('chapter-list');
+        function formatTime(seconds) { if (isNaN(seconds)) return "00:00"; const m = Math.floor(seconds / 60).toString().padStart(2, '0'); const s = Math.floor(seconds % 60).toString().padStart(2, '0'); return `${m}:${s}`; }
+        window.onload = () => { sequence.forEach((sec, idx) => { let div = document.createElement('div'); div.className = 'chapter-item'; div.innerText = sec.title; div.id = `chapter-btn-${idx}`; div.onclick = () => saltarASeccion(idx); chapterList.appendChild(div); }); };
+        document.getElementById('start-btn').addEventListener('click', function() { this.style.display = 'none'; document.getElementById('title-intro').style.display = 'none'; setTimeout(() => { document.getElementById('cortinilla').style.opacity = '0'; setTimeout(() => { document.getElementById('cortinilla').style.display = 'none'; document.getElementById('watermark').style.display = 'block'; document.getElementById('controls-container').style.opacity = '1'; document.getElementById('chapters-menu').style.opacity = '1'; isCourseStarted = true; isPlaying = true; reproducirSeccion(0); iniciarReloj(); }, 1000); }, 1500); });
+        function reproducirSeccion(index) { if (index < 0 || index >= sequence.length) return; const oldAudio = document.getElementById(`audio-${sequence[currentIndex].id}`); if (oldAudio) { oldAudio.pause(); oldAudio.currentTime = 0; } currentIndex = index; document.querySelectorAll('.slide').forEach(el => el.classList.remove('active')); document.getElementById(`slide-${sequence[currentIndex].id}`).classList.add('active'); document.querySelectorAll('.chapter-item').forEach(el => el.classList.remove('active')); document.getElementById(`chapter-btn-${currentIndex}`).classList.add('active'); const currentAudio = document.getElementById(`audio-${sequence[currentIndex].id}`); if (currentAudio) { if (isPlaying) { let playPromise = currentAudio.play(); if (playPromise !== undefined) { playPromise.catch(error => { isPlaying = false; btnPlayPause.innerText = '▶️'; }); } } currentAudio.onended = () => { if (currentIndex + 1 < sequence.length) { reproducirSeccion(currentIndex + 1); } else { btnPlayPause.innerText = '🔁'; isPlaying = false; } }; } else { setTimeout(() => { if (isPlaying && currentIndex + 1 < sequence.length) reproducirSeccion(currentIndex + 1); }, 3000); } }
+        function saltarASeccion(index) { if (!isCourseStarted) return; isPlaying = true; btnPlayPause.innerText = '⏸️'; reproducirSeccion(index); }
+        function iniciarReloj() { updateInterval = setInterval(() => { if (!isPlaying) return; const audio = document.getElementById(`audio-${sequence[currentIndex].id}`); if (audio) { timeCurrent.innerText = formatTime(audio.currentTime); const dur = isNaN(audio.duration) ? 1 : audio.duration; progressFill.style.width = (audio.currentTime / dur * 100) + '%'; } }, 100); }
+        btnPlayPause.addEventListener('click', () => { if (!isCourseStarted) return; const audio = document.getElementById(`audio-${sequence[currentIndex].id}`); if (currentIndex >= sequence.length - 1 && audio && audio.ended) { isPlaying = true; btnPlayPause.innerText = '⏸️'; saltarASeccion(0); return; } if (isPlaying) { if(audio) audio.pause(); isPlaying = false; btnPlayPause.innerText = '▶️'; } else { if(audio) audio.play(); isPlaying = true; btnPlayPause.innerText = '⏸️'; } });
+        document.getElementById('btn-next').addEventListener('click', () => { if (!isCourseStarted) return; if (currentIndex + 1 < sequence.length) saltarASeccion(currentIndex + 1); });
+        document.getElementById('btn-prev').addEventListener('click', () => { if (!isCourseStarted) return; const audio = document.getElementById(`audio-${sequence[currentIndex].id}`); if (audio && audio.currentTime > 3) { audio.currentTime = 0; } else if (currentIndex > 0) { saltarASeccion(currentIndex - 1); } });
+    </script>
+</body>
+</html>
